@@ -6,23 +6,80 @@ const PORT = 8000;
 
 const app = express();
 
+// Base required as some links <a> tags do not contain a base when scraping.
 const newspapers = [
+  {
+    name: 'cityam',
+    address:
+      'https://www.cityam.com/london-must-become-a-world-leader-on-climate-change-action/',
+    base: '',
+  },
   {
     name: 'thetimes',
     address: 'https://www.thetimes.co.uk/environment/climate-change',
+    base: '',
   },
   {
     name: 'guardian',
     address: 'https://www.theguardian.com/environment/climate-crisis',
+    base: '',
   },
   {
     name: 'telegraph',
     address: 'https://www.telegraph.co.uk/climate-change',
+    base: 'https://www.telegraph.co.uk',
+  },
+  {
+    name: 'nyt',
+    address: 'https://www.nytimes.com/international/section/climate',
+    base: '',
+  },
+  {
+    name: 'latimes',
+    address: 'https://www.latimes.com/environment',
+    base: '',
+  },
+  {
+    name: 'smh',
+    address: 'https://www.smh.com.au/environment/climate-change',
+    base: 'https://www.smh.com.au',
+  },
+  {
+    name: 'un',
+    address: 'https://www.un.org/climatechange',
+    base: '',
+  },
+  {
+    name: 'bbc',
+    address: 'https://www.bbc.co.uk/news/science_and_environment',
+    base: 'https://www.bbc.co.uk',
+  },
+  {
+    name: 'es',
+    address: 'https://www.standard.co.uk/topic/climate-change',
+    base: 'https://www.standard.co.uk',
+  },
+  {
+    name: 'sun',
+    address: 'https://www.thesun.co.uk/topic/climate-change-environment/',
+    base: '',
+  },
+  {
+    name: 'dm',
+    address:
+      'https://www.dailymail.co.uk/news/climate_change_global_warming/index.html',
+    base: '',
+  },
+  {
+    name: 'nyp',
+    address: 'https://nypost.com/tag/climate-change/',
+    base: '',
   },
 ];
 
 const articles = [];
 
+// Query all newspaper publishers.
 newspapers.forEach((newspaper) => {
   axios.get(newspaper.address).then((response) => {
     const html = response.data;
@@ -34,19 +91,59 @@ newspapers.forEach((newspaper) => {
 
       articles.push({
         title,
-        url,
+        url: newspaper.base + url,
         source: newspaper.name,
       });
     });
   });
 });
 
+// Empty Base url.
 app.get('/', (req, res) => {
   res.json('Welcome to my Climate Change API');
 });
 
+// Display all scraped newspaper publishers.
 app.get('/news', (req, res) => {
   res.json(articles);
+});
+
+// Query a specific newspaper publisher.
+app.get('/news/:newspaperId', (req, res) => {
+  const newspaperId = req.params.newspaperId;
+
+  const newspaperAddress = newspapers.filter(
+    (newspaper) => newspaper.name === newspaperId
+  )[0].address;
+
+  const newspaperBase = newspapers.filter(
+    (newspaper) => newspaper.name == newspaperId
+  )[0].base;
+
+  console.log(newspaper);
+
+  axios
+    .get(newspaperAddress)
+    .then((response) => {
+      const html = response.dataconst;
+      const $ = cheerio.load(html);
+      const specificArticles = [];
+
+      $('a:contains("climate", html)', html).each(function () {
+        const title = $(this).text();
+        const url = $(this).attr('href');
+        specificArticles.push({
+          title,
+          url: newspaperBase + url,
+          source: newspaperId,
+        });
+      });
+
+      res.json(specificAricles);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
