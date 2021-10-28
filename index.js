@@ -2,11 +2,11 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const PORT = 8000;
-
 const app = express();
 
-// Base required as some links <a> tags do not contain a base when scraping.
+const PORT = 8000;
+
+// Base required as some links <a> tags do not contain a base url when scraping.
 const newspapers = [
   {
     name: 'cityam',
@@ -119,8 +119,6 @@ app.get('/news/:newspaperId', (req, res) => {
   const newspaperBase = newspapers.filter(
     (newspaper) => newspaper.name == newspaperId
   )[0].base;
-
-  console.log(newspaper);
 
   axios
     .get(newspaperAddress)
