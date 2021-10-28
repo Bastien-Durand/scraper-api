@@ -137,7 +137,7 @@ app.get('/news/:newspaperId', (req, res) => {
         });
       });
 
-      res.json(specificAricles);
+      res.json(specificArticles);
     })
     .catch((err) => {
       console.log(err);
