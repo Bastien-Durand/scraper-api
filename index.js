@@ -126,10 +126,12 @@ app.get('/news/:newspaperId', (req, res) => {
       const html = response.data;
       const $ = cheerio.load(html);
       const specificArticles = [];
+      console.log(`Cheerio $ ${$}`);
 
-      $('a:contains("climate", html)', html).each(function () {
+      $('a:contains("climate")', html).each(function () {
         const title = $(this).text();
         const url = $(this).attr('href');
+        console.log(specificArticles);
         specificArticles.push({
           title,
           url: newspaperBase + url,
