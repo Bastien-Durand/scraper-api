@@ -123,7 +123,7 @@ app.get('/news/:newspaperId', (req, res) => {
   axios
     .get(newspaperAddress)
     .then((response) => {
-      const html = response.dataconst;
+      const html = response.data;
       const $ = cheerio.load(html);
       const specificArticles = [];
 
