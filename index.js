@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 
 const app = express();
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 // Base required as some links <a> tags do not contain a base url when scraping.
 const newspapers = [
